@@ -1,0 +1,123 @@
+{
+  "id": "ch1",
+  "title": "Chapter 1 — The Awakening: What is Git?",
+  "lore": "You awaken in the Kingdom of Repos. The Archive Keeper whispers: “To restore the lost histories, you must master Git — the magic of versioning.”",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "What is Version Control? Why Git?",
+      "lesson": "Version Control tracks changes to files over time. Git is a DISTRIBUTED VCS — every developer has the full history locally. Benefits: undo mistakes, branch safely, collaborate without overwriting, and review history.\n\nWhy Git (vs centralized systems like SVN)?\n- Git is faster (local operations, no central bottleneck)\n- More reliable (every developer has a backup copy)\n- Branching and merging are cheap and powerful\n- Open source & widely adopted.",
+      "demo": {
+        "code": "# Check Git is installed\ngit --version",
+        "notes": "If Git is not installed, download it from https://git-scm.com/downloads."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Git is best described as…",
+        "options": [
+          "A cloud storage tool",
+          "A distributed version control system",
+          "A programming language",
+          "A code editor"
+        ],
+        "answer": 1,
+        "explain": "Git is a DVCS — a distributed version control system.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Creating Your First Repository",
+      "lesson": "A repository (repo) is a directory tracked by Git. Run `git init` inside a folder to start tracking. This creates a hidden `.git/` folder that stores all metadata and history.",
+      "demo": {
+        "code": "# Inside your project folder\nmkdir app && cd app\ngit init\n\n# Check that .git/ folder is created\nls -a",
+        "notes": "`.git/` is hidden; deleting it untracks the repo (danger!)."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Initialize a repository in the current folder: `git ____`",
+        "answerText": "init",
+        "explain": "`git init` creates a new empty repo in the current directory.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Identify Yourself (Global Config)",
+      "lesson": "Git records the author and committer on each commit. Set your name and email globally so all repos use them by default.",
+      "demo": {
+        "code": "git config --global user.name \"Your Name\"\ngit config --global user.email \"you@example.com\"\n\ngit config --list --global",
+        "notes": "Use `--local` inside a repo to set per-repo config instead of global."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Fill the missing word: `git ____ --global user.name \"RK\"`",
+        "answerText": "config",
+        "explain": "`git config --global` sets author identity globally.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Checking Status & the Three Areas",
+      "lesson": "Git has three main areas:\n1. Working Directory (your files)\n2. Staging Area (index of what will go into the next commit)\n3. Repository (committed history).\n\nUse `git status` to see what’s untracked, modified, staged, or committed.",
+      "demo": {
+        "code": "echo \"hello\" > notes.txt\n\ngit status            # shows untracked file\n\ngit add notes.txt     # stage it\n\ngit status            # now it's staged",
+        "notes": "Always run `git status` often — it’s your dashboard."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command shows which files are staged, modified, or untracked?",
+        "options": [
+          "git check",
+          "git status",
+          "git diff",
+          "git log"
+        ],
+        "answer": 1,
+        "explain": "`git status` displays the current repo state, including branch, staged, and unstaged changes.",
+        "xp": 40
+      }
+    }
+  ],
+  "boss": {
+    "id": "b1",
+    "title": "Boss: The Gate of History",
+    "intro": "To pass through the Gate of History, prove your understanding of Git basics.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "`git init` does what?",
+        "options": [
+          "Clones a remote repository",
+          "Creates a new empty Git repository",
+          "Pushes commits to origin",
+          "Installs Git"
+        ],
+        "answer": 1,
+        "explain": "`git init` creates a new empty Git repository in the current folder.",
+        "xp": 60
+      },
+      {
+        "type": "blank",
+        "prompt": "Set your username globally: `git ____ --global user.name \"RK\"`",
+        "answerText": "config",
+        "explain": "Use `git config --global` to set user identity globally.",
+        "xp": 60
+      },
+      {
+        "type": "mcq",
+        "prompt": "Which command shows the current branch and file states (staged/unstaged)?",
+        "options": [
+          "git log",
+          "git status",
+          "git show",
+          "git diff"
+        ],
+        "answer": 1,
+        "explain": "`git status` displays the branch and status of files.",
+        "xp": 60
+      }
+    ]
+  }
+}

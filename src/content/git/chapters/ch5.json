@@ -1,0 +1,142 @@
+{
+  "id": "ch5",
+  "title": "Chapter 5 — Stash & Cherry-Pick Spells",
+  "lore": "Deep in the Caves of Unfinished Work, wizards teach you the spells to hide, recall, and copy changes across time.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Stash Basics",
+      "lesson": "Sometimes you need to pause your work. `git stash` saves changes (both staged and unstaged) and reverts your working directory to a clean state. Later, you can reapply them.\nCommon uses:\n- Switching branches without committing half-done work.\n- Quickly cleaning workspace for a test.",
+      "demo": {
+        "code": "# Save current changes\ngit stash\n\n# List stashes\ngit stash list\n\n# Reapply most recent stash\ngit stash apply\n\n# Apply and drop stash\ngit stash pop",
+        "notes": "Stashes are stored in a stack; each has an index (stash@{0}, stash@{1}, ...)."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command saves your current modifications temporarily?",
+        "options": [
+          "git save",
+          "git hide",
+          "git stash",
+          "git cache"
+        ],
+        "answer": 2,
+        "explain": "`git stash` stores your current working state safely on a stack.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Applying & Dropping Stashes",
+      "lesson": "`git stash apply` reapplies a stash without removing it from the list. `git stash pop` reapplies **and removes** it.\nUse `git stash drop <id>` to delete a specific stash.",
+      "demo": {
+        "code": "git stash list\n\n# Apply second stash but keep it\ngit stash apply stash@{1}\n\n# Pop most recent stash (apply + remove)\ngit stash pop\n\n# Drop a stash explicitly\ngit stash drop stash@{1}",
+        "notes": "Careful: if applying causes conflicts, resolve them like a normal merge conflict."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command reapplies a stash **and removes it** from the stash list?",
+        "options": [
+          "git stash apply",
+          "git stash pop",
+          "git stash push",
+          "git stash drop"
+        ],
+        "answer": 1,
+        "explain": "`git stash pop` reapplies the stash and then removes it.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Cherry-Pick Commits",
+      "lesson": "`git cherry-pick` lets you copy specific commits from one branch into your current branch. Useful when you want a bugfix or feature commit without merging the whole branch.",
+      "demo": {
+        "code": "# On main, bring over a commit from feature branch\ngit switch main\ngit cherry-pick <commit-hash>\n\n# If conflicts occur, resolve them → git add <file> → git cherry-pick --continue",
+        "notes": "Best for targeted fixes. Don’t cherry-pick too often; it can duplicate history."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What does `git cherry-pick <hash>` do?",
+        "options": [
+          "Deletes the commit with that hash",
+          "Copies that commit onto your current branch",
+          "Clones a repo at that commit",
+          "Moves HEAD back to that commit"
+        ],
+        "answer": 1,
+        "explain": "`git cherry-pick` applies the changes from an existing commit onto your current branch.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Partial Commits (git add -p)",
+      "lesson": "Sometimes you want to commit only part of a file’s changes. `git add -p` (patch mode) lets you stage changes hunk by hunk.\nWorkflow:\n1) Run `git add -p`\n2) Git shows changes hunk by hunk\n3) Choose y (stage), n (skip), e (edit), s (split), q (quit)",
+      "demo": {
+        "code": "git add -p\n# Respond to prompts per hunk\n# Commit the staged hunks normally\ngit commit -m \"Refactor function, keep formatting separate\"",
+        "notes": "Great for crafting focused commits instead of dumping all changes at once."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Which command stages file changes hunk by hunk? `git add ____`",
+        "answerText": "-p",
+        "explain": "`git add -p` lets you interactively select which hunks to stage.",
+        "xp": 50
+      }
+    }
+  ],
+  "boss": {
+    "id": "b5",
+    "title": "Boss: Keeper of Hidden Spells",
+    "intro": "The Keeper asks: do you truly control stashes and selective commits?",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "You want to save unfinished work, switch branches, and later restore it. Which command?",
+        "options": [
+          "git hide",
+          "git stash",
+          "git save",
+          "git store"
+        ],
+        "answer": 1,
+        "explain": "`git stash` is the spell to hide work temporarily.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "You reapplied a stash but it’s still in the stash list. Which command did you use?",
+        "options": [
+          "git stash apply",
+          "git stash pop",
+          "git stash drop",
+          "git stash clear"
+        ],
+        "answer": 0,
+        "explain": "`git stash apply` reapplies but doesn’t remove.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "You need to copy a single commit from `feature` to `main`. Which command?",
+        "options": [
+          "git clone",
+          "git checkout",
+          "git cherry-pick <hash>",
+          "git merge feature"
+        ],
+        "answer": 2,
+        "explain": "`git cherry-pick` applies one commit by hash.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "Stage only part of a file’s changes interactively: `git add ____`",
+        "answerText": "-p",
+        "explain": "`-p` stands for patch mode; stages hunks one at a time.",
+        "xp": 70
+      }
+    ]
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "id": "ch3",
+  "title": "Chapter 3 — Branches of Possibility",
+  "lore": "In the Forest of Branches, paths split into many futures. Choose wisely, merge carefully.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Branch Concept & Use Cases",
+      "lesson": "A branch is a movable pointer to a commit. You can develop features in isolation without touching main. Typical uses: feature branches, hotfix branches, experiment/prototype branches, release branches.",
+      "demo": {
+        "code": "# Show current branch and others\ngit branch\n\n# Show where HEAD points (with commits)\ngit log --oneline --decorate --graph --all",
+        "notes": "Keep branch names short and descriptive: feature/auth-ui, fix/login-timeout."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What is a Git branch?",
+        "options": [
+          "A copy of your entire repository on another server",
+          "A pointer (name) that references a specific commit",
+          "A compressed archive of your files",
+          "A mandatory clone of main"
+        ],
+        "answer": 1,
+        "explain": "A branch is just a pointer (ref) to a commit; moving as you add new commits.",
+        "xp": 45
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Create & Switch Branches",
+      "lesson": "Create a branch, then switch to it to start committing there. Newer commands: `git switch` and `git restore` split old `checkout` behaviors.",
+      "demo": {
+        "code": "# Create a branch\ngit branch feature/ui\n\n# Switch to a branch (new style)\ngit switch feature/ui\n\n# Create and switch in one step (two options)\ngit switch -c feature/api\n# or\ngit checkout -b feature/api",
+        "notes": "`git checkout -b <name>` (legacy) and `git switch -c <name>` (new) do the same create+switch."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Create and switch to a branch named `feature/payments` in one command:",
+        "options": [
+          "git new feature/payments",
+          "git switch -c feature/payments",
+          "git push -u origin feature/payments",
+          "git branch -d feature/payments"
+        ],
+        "answer": 1,
+        "explain": "`git switch -c <name>` (or `git checkout -b <name>`) creates and switches.",
+        "xp": 45
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Merging Basics (Fast-forward vs 3-way)",
+      "lesson": "Merging combines histories.\n- Fast-forward: target branch (e.g., main) has no new commits; Git just moves the pointer forward (no new merge commit).\n- 3-way (true merge): both branches diverged; Git creates a merge commit with two parents.",
+      "demo": {
+        "code": "# Merge a finished feature into main\ngit switch main\ngit merge feature/ui   # fast-forward if main hasn't diverged\n\n# Visualize history\ngit log --oneline --graph --decorate --all",
+        "notes": "Many teams prefer fast-forward (linear history) for small features; others keep merge commits for clarity."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "A fast-forward merge means…",
+        "options": [
+          "Git rewrites history on both branches",
+          "The target branch pointer moves forward without creating a merge commit",
+          "Conflicts were auto-resolved",
+          "A squash occurred"
+        ],
+        "answer": 1,
+        "explain": "In a fast-forward, Git simply advances the pointer—no new merge commit.",
+        "xp": 45
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Conflicts & Resolution Workflow",
+      "lesson": "Conflicts happen when the same lines (or nearby) changed differently. Resolution steps:\n1) Attempt merge → Git marks conflicts.\n2) Open files, search for conflict markers `<<<<<<<`, `=======`, `>>>>>>>`.\n3) Edit to keep the correct combined content.\n4) Mark resolved by staging the file: `git add <file>`.\n5) Complete the merge with `git commit` (if not fast-forward).",
+      "demo": {
+        "code": "# After a merge reports conflicts\n# Edit conflicted files, remove conflict markers, keep the right content\n\ngit add path/to/conflicted-file\n\ngit commit   # completes the merge",
+        "notes": "Use `git status` and `git diff` to understand conflicts. Good editors show inline conflict helpers."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "After fixing a conflict in a file, which command marks it as resolved? `git ____ <file>`",
+        "answerText": "add",
+        "explain": "Staging (`git add`) marks the file resolved; then `git commit` finishes the merge.",
+        "xp": 45
+      }
+    }
+  ],
+  "boss": {
+    "id": "b3",
+    "title": "Boss: The Merge Troll",
+    "intro": "Only those who master branches and merges may pass.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "Create and switch to `feature/checkout` in one command:",
+        "options": [
+          "git switch -c feature/checkout",
+          "git push -u origin feature/checkout",
+          "git new feature/checkout",
+          "git branch -d feature/checkout"
+        ],
+        "answer": 0,
+        "explain": "`git switch -c <name>` (or `git checkout -b <name>`) creates and checks out the branch.",
+        "xp": 65
+      },
+      {
+        "type": "mcq",
+        "prompt": "You’re on `main`. `feature/ui` is ahead; `main` has no new commits. What merge type is likely?",
+        "options": [
+          "Rebase",
+          "Fast-forward",
+          "3-way merge",
+          "Cherry-pick"
+        ],
+        "answer": 1,
+        "explain": "If main has not diverged, the merge is a fast-forward.",
+        "xp": 65
+      },
+      {
+        "type": "blank",
+        "prompt": "After resolving conflicts in `app.jsx`, mark it resolved: `git ____ app.jsx`",
+        "answerText": "add",
+        "explain": "Stage the file to mark conflicts resolved.",
+        "xp": 65
+      }
+    ]
+  }
+}

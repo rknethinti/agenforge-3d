@@ -1,0 +1,174 @@
+{
+  "id": "ch2",
+  "title": "Chapter 2 — Forging the First Commit",
+  "lore": "At the Anvil of Changes, the Smith teaches you how raw edits are forged into history.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Staging Area Explained",
+      "lesson": "Git uses three areas: Working Directory (your files), Staging Area (index of selected changes), and Repository (committed history). Staging lets you carefully choose what goes into the next commit.",
+      "demo": {
+        "code": "echo \"line1\" > app.txt\n# Modify and inspect\nprintf \"\\nline2\" >> app.txt\n\ngit status           # modified/unstaged\n\ngit add app.txt      # now staged\n\ngit status           # shows staged change",
+        "notes": "Stage only logically related changes for clean commits."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What is the purpose of the Staging Area (Index)?",
+        "options": [
+          "To permanently save all changes",
+          "To select exactly which changes will be included in the next commit",
+          "To push changes to remote",
+          "To delete untracked files"
+        ],
+        "answer": 1,
+        "explain": "The index is a holding area where you prepare a precise snapshot for the next commit.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Adding Changes: git add",
+      "lesson": "`git add` moves changes from Working Directory → Staging Area. You can add specific files, directories, or everything.",
+      "demo": {
+        "code": "git add app.txt      # stage one file\n\ngit add .            # stage all modified/new files (not deleted)\n\ngit add -A           # stage all changes (including deletions)",
+        "notes": "`git add -p` lets you interactively select hunks."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command stages ALL modified and new files (common choice)?",
+        "options": [
+          "git stage *",
+          "git add .",
+          "git push -u origin",
+          "git commit -a"
+        ],
+        "answer": 1,
+        "explain": "`git add .` (or `git add -A`) stages all current modifications and new files.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Creating Commits: git commit",
+      "lesson": "A commit records the staged snapshot with metadata (author, date, message). Only staged changes are included.",
+      "demo": {
+        "code": "git commit -m \"Add app.txt with initial content\"",
+        "notes": "Good messages: imperative mood, explain WHY, not just WHAT."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Create a commit with the message \"init\": `git commit ____ \"init\"`",
+        "answerText": "-m",
+        "explain": "Use `-m` to pass the commit message inline.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Write Great Commit Messages",
+      "lesson": "Format (7 rules):\n1) Subject ≤ 50 chars, imperative (e.g., \"Add feature X\").\n2) Blank line between subject and body.\n3) Body text wraps at ~72 chars.\n4) Explain motivation/impact.\n5) Reference issues/links if helpful.\n6) Use conventional commits optionally (feat:, fix:, docs:).\n7) One logical change per commit.",
+      "demo": {
+        "code": "git commit -m \"feat(app): add greeting endpoint\"\n# or open editor for multi-line message\n# git commit",
+        "notes": "Conventional commits improve readability and changelogs."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which subject line best follows good practice?",
+        "options": [
+          "Added a bunch of stuff and fixed things here and there",
+          "Fix bug in login when token expires",
+          "fix: handle expired token during login",
+          "login token"
+        ],
+        "answer": 2,
+        "explain": "Concise, imperative, and conventional (`fix:`) is preferred.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t5",
+      "title": "Viewing History: git log",
+      "lesson": "`git log` shows commit history. `--oneline` condenses each commit to one line; combine with `--graph --decorate --all` for a quick overview.",
+      "demo": {
+        "code": "git log\n\ngit log --oneline\n\ngit log --oneline --graph --decorate --all",
+        "notes": "`git show <commit>` reveals details for a commit."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command shows a condensed, one-line-per-commit history?",
+        "options": [
+          "git log",
+          "git log --oneline",
+          "git history --short",
+          "git commits --short"
+        ],
+        "answer": 1,
+        "explain": "`git log --oneline` displays abbreviated commit IDs with messages.",
+        "xp": 40
+      }
+    },
+    {
+      "id": "t6",
+      "title": "Ignoring Files: .gitignore",
+      "lesson": "Use a `.gitignore` file to avoid tracking generated files (build artifacts, logs, secrets). Patterns in `.gitignore` tell Git which paths to ignore.",
+      "demo": {
+        "code": "cat > .gitignore << 'EOF'\n# Node\nnode_modules/\n.env\n.DS_Store\n/dist\n*.log\nEOF\n\ngit status            # ignored files shouldn't appear as untracked",
+        "notes": "If a file is already tracked, add it to .gitignore and then `git rm --cached <file>` to stop tracking."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Which file lists patterns of files/directories Git should ignore by default?",
+        "answerText": ".gitignore",
+        "explain": "Place ignore patterns in `.gitignore` at repo root or subfolders.",
+        "xp": 40
+      }
+    }
+  ],
+  "boss": {
+    "id": "b2",
+    "title": "Boss: The Anvil Trial",
+    "intro": "Forge a clean first commit. Answer these to prove your mastery.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "You changed three files but only want to commit one. What do you do?",
+        "options": [
+          "git commit -a (commits everything)",
+          "git add <that-file> then git commit -m \"message\"",
+          "git push -u origin HEAD",
+          "git reset --hard"
+        ],
+        "answer": 1,
+        "explain": "Stage only the file you want, then commit.",
+        "xp": 60
+      },
+      {
+        "type": "blank",
+        "prompt": "Write a one-line commit with message \"init\": `git commit ____ \"init\"`",
+        "answerText": "-m",
+        "explain": "Use `-m` to provide the message.",
+        "xp": 60
+      },
+      {
+        "type": "mcq",
+        "prompt": "Show condensed history suitable for quick scanning:",
+        "options": [
+          "git log --oneline",
+          "git log --long",
+          "git history --compact",
+          "git show --short"
+        ],
+        "answer": 0,
+        "explain": "`git log --oneline` is the standard condensed view.",
+        "xp": 60
+      },
+      {
+        "type": "blank",
+        "prompt": "Ignore the `node_modules` directory using the standard file: `__.__________`",
+        "answerText": ".gitignore",
+        "explain": "Add `node_modules/` to `.gitignore`.",
+        "xp": 60
+      }
+    ]
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "id": "ch6",
+  "title": "Chapter 6 — Remote Realms: Collaborating",
+  "lore": "Beyond the castle lies the Network of Remotes. To collaborate, you must learn to link, push, and pull from distant realms.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Remotes Explained",
+      "lesson": "A remote is a reference to another copy of the repository, usually on a server like GitHub, GitLab, or Bitbucket. By default, cloning a repo sets a remote named `origin`.",
+      "demo": {
+        "code": "# Show configured remotes\ngit remote -v\n\n# Add a new remote\ngit remote add origin https://github.com/user/repo.git",
+        "notes": "Conventionally, `origin` refers to the default upstream repository."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Add a remote named origin: `git remote ____ origin <url>`",
+        "answerText": "add",
+        "explain": "Use `git remote add <name> <url>` to link a remote repository.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Cloning Repositories",
+      "lesson": "Cloning creates a full local copy of a remote repository, including its history. It also sets up `origin` pointing to that remote.",
+      "demo": {
+        "code": "git clone https://github.com/user/repo.git\ncd repo\n\ngit remote -v   # confirms origin is set",
+        "notes": "Always check the remote URL and permissions before cloning."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What does `git clone <url>` do?",
+        "options": [
+          "Copies only the latest commit",
+          "Creates a full local copy of the remote repo, including history",
+          "Downloads only the files without history",
+          "Creates an empty repository"
+        ],
+        "answer": 1,
+        "explain": "`git clone` fetches the entire repository and sets `origin` to the remote.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Pushing Changes",
+      "lesson": "`git push` uploads your local branch commits to the remote branch. Use `-u` (or `--set-upstream`) to set default tracking so future pushes need only `git push`.",
+      "demo": {
+        "code": "# First push with upstream set\ngit push -u origin main\n\n# Later pushes\ngit push",
+        "notes": "Always pull/rebase before pushing to avoid rejected updates."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command pushes the current branch and sets upstream?",
+        "options": [
+          "git push",
+          "git push origin",
+          "git push -u origin HEAD",
+          "git push --force"
+        ],
+        "answer": 2,
+        "explain": "`git push -u origin HEAD` sets the remote tracking branch and pushes current commits.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Fetching vs Pulling",
+      "lesson": "Use `git fetch` to download remote changes **without** merging. This updates remote tracking branches (e.g., origin/main).\nUse `git pull` to fetch + automatically merge (or rebase) into your current branch.",
+      "demo": {
+        "code": "git fetch origin\n\n# Compare with local main\ngit log origin/main..main\n\n# Merge fetched changes\ngit pull origin main",
+        "notes": "Preferred workflow: fetch first, review, then merge or rebase."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What is the difference between `git fetch` and `git pull`?",
+        "options": [
+          "`fetch` downloads changes without merging, `pull` downloads and merges into current branch",
+          "`fetch` deletes remote commits, `pull` clones a new repo",
+          "`fetch` only updates files, `pull` updates history",
+          "They are identical"
+        ],
+        "answer": 0,
+        "explain": "`git fetch` is safe (no merge); `git pull` = fetch + merge/rebase.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t5",
+      "title": "Tracking Branches",
+      "lesson": "A tracking branch is a local branch connected to a remote branch. Commands like `git pull` and `git push` know which remote branch to sync with.\nYou set tracking with `git push -u origin <branch>` or `git branch --set-upstream-to=origin/<branch>`.",
+      "demo": {
+        "code": "git checkout -b feature/api\n\ngit push -u origin feature/api   # sets upstream\n\ngit status   # shows branch is tracking origin/feature/api",
+        "notes": "Tracking simplifies commands—no need to specify remote/branch every time."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Set current branch to track `origin/feature`: `git branch --set-upstream-to=origin/____`",
+        "answerText": "feature",
+        "explain": "Use `git branch --set-upstream-to=origin/<branch>` to link tracking.",
+        "xp": 50
+      }
+    }
+  ],
+  "boss": {
+    "id": "b6",
+    "title": "Boss: The Mirror Keeper",
+    "intro": "The Mirror Keeper guards the bridge to the remote realms. Show you can link, push, and pull.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "Clone a repo from GitHub to your local machine:",
+        "options": [
+          "git pull https://github.com/user/repo.git",
+          "git clone https://github.com/user/repo.git",
+          "git remote add https://github.com/user/repo.git",
+          "git fork https://github.com/user/repo.git"
+        ],
+        "answer": 1,
+        "explain": "`git clone` makes a full local copy with history.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "Add a new remote named origin: `git remote ____ origin <url>`",
+        "answerText": "add",
+        "explain": "Use `git remote add origin <url>`.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "Which is safer for reviewing incoming work before merging?",
+        "options": [
+          "git pull",
+          "git fetch",
+          "git push",
+          "git clone"
+        ],
+        "answer": 1,
+        "explain": "`git fetch` downloads changes without merging, letting you review before applying.",
+        "xp": 70
+      }
+    ]
+  }
+}

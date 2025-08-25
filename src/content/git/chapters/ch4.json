@@ -1,0 +1,129 @@
+{
+  "id": "ch4",
+  "title": "Chapter 4 — History Surgery: Rebase & Reset",
+  "lore": "In the Hall of Time, you learn to reshape history itself. Use these powers wisely, for careless edits can wound your teammates.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Rebase vs Merge",
+      "lesson": "Both merge and rebase integrate changes from one branch into another.\n- MERGE: preserves history as it happened; creates a merge commit when branches diverged.\n- REBASE: rewrites commit bases to create a linear history; your commits are replayed on top of another branch.\nTeam guidance:\n- Prefer rebase for cleaning up your own local feature branch before pushing.\n- Prefer merge (or squash merge) for integrating a reviewed feature into main.\n- Never rebase shared public history unless everyone agrees.",
+      "demo": {
+        "code": "# Start on your feature branch\ngit switch feature/ui\n# Rebase your work on top of updated main\ngit fetch origin\ngit rebase origin/main\n\n# If conflicts arise: edit files → git add <file> → git rebase --continue\n# Abort entire rebase if needed\ngit rebase --abort",
+        "notes": "Rebase keeps history linear but changes commit IDs. Avoid rebasing branches others already pulled."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which statement about rebase vs merge is correct?",
+        "options": [
+          "Merge rewrites your local commits; rebase always preserves history",
+          "Rebase rewrites commits to create a linear history; merge preserves the exact historical structure",
+          "Both rebase and merge create identical histories",
+          "Rebase is always safer on shared public branches"
+        ],
+        "answer": 1,
+        "explain": "Rebase rewrites commits for linear history; merge keeps true history (often with a merge commit).",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Interactive Rebase (git rebase -i)",
+      "lesson": "Interactive rebase lets you edit a series of commits: reword messages, squash/fixup multiple commits into one, reorder, or drop commits.\nCommon actions:\n- pick: keep commit as-is\n- reword: change commit message\n- squash/fixup: combine commits\n- edit: pause to modify content\n- drop: remove commit",
+      "demo": {
+        "code": "# Rewrite the last 4 commits on current branch\ngit rebase -i HEAD~4\n# In the editor, change actions: pick/reword/squash/fixup/edit/drop\n# If you chose 'edit', make changes, then:\n#   git add <files>\n#   git commit --amend\n#   git rebase --continue",
+        "notes": "Use interactive rebase to deliver clean, logical commit history before pushing."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "You have 4 messy WIP commits. Best way to produce one clean commit?",
+        "options": [
+          "git merge --squash main",
+          "git rebase -i HEAD~4 and squash/fixup into a single commit",
+          "git reset --hard HEAD~4",
+          "git cherry-pick main"
+        ],
+        "answer": 1,
+        "explain": "Interactive rebase allows squashing multiple commits into one clean commit.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Reset Modes: --soft, --mixed, --hard",
+      "lesson": "`git reset` moves HEAD and (optionally) the index/working tree.\n- --soft: move HEAD only; keep index and working tree (staged changes remain). Great for redoing a commit.\n- --mixed (default): move HEAD and reset the index; working tree kept (changes become unstaged).\n- --hard: move HEAD and reset index + working tree; WARNING: discards local changes.",
+      "demo": {
+        "code": "# Undo the last commit but keep changes staged\ngit reset --soft HEAD~1\n\n# Undo staging (keep file modifications)\ngit reset --mixed HEAD~1\n\n# Discard all local changes (DANGEROUS)\ngit reset --hard HEAD",
+        "notes": "Use --hard carefully. Commit or stash before destructive actions."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which reset keeps your file modifications but unstages them?",
+        "options": [
+          "git reset --soft HEAD~1",
+          "git reset --mixed HEAD~1",
+          "git reset --hard HEAD~1",
+          "git reset --keep HEAD~1"
+        ],
+        "answer": 1,
+        "explain": "`--mixed` (default) resets the index but preserves working files.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Reflog: Time Travel & Recovery",
+      "lesson": "Reflog tracks movements of HEAD and branch tips locally. It lets you recover commits/branches you seem to have lost after reset/rebase.\nUsage:\n- Inspect: `git reflog`\n- Restore: find the commit (e.g., HEAD@{3}) and checkout or reset to it.",
+      "demo": {
+        "code": "# View recent HEAD movements\ngit reflog\n\n# Recover by creating a new branch at a previous position\ngit branch rescue HEAD@{3}\n# Or reset current branch back (careful!)\ngit reset --hard HEAD@{3}",
+        "notes": "Reflog is local. It won’t help if history never existed on your machine."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Which command lists your recent HEAD and branch tip movements?",
+        "answerText": "git reflog",
+        "explain": "`git reflog` records where HEAD/branches have pointed locally.",
+        "xp": 50
+      }
+    }
+  ],
+  "boss": {
+    "id": "b4",
+    "title": "Boss: The Historian",
+    "intro": "The Historian demands a pristine, recoverable history. Prove your mastery of surgery and time travel.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "Clean up 5 local WIP commits into one before pushing. Which is best?",
+        "options": [
+          "git reset --hard HEAD~5",
+          "git rebase -i HEAD~5 and squash",
+          "git merge --no-ff main",
+          "git checkout -b cleanup"
+        ],
+        "answer": 1,
+        "explain": "Interactive rebase with squash produces a single clean commit.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "You accidentally ran `git reset --hard` and lost changes. First command to try for recovery?",
+        "options": [
+          "git reflog",
+          "git gc",
+          "git prune",
+          "git push --force"
+        ],
+        "answer": 0,
+        "explain": "`git reflog` lets you find previous commit positions to recover.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "Reset HEAD but keep changes in the working directory **unstaged**: `git reset ____ HEAD~1`",
+        "answerText": "--mixed",
+        "explain": "`--mixed` resets the index while keeping modifications in the working tree.",
+        "xp": 70
+      }
+    ]
+  }
+}
