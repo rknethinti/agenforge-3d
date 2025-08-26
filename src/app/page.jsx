@@ -3,7 +3,7 @@ import Link from "next/link";
 // AgenForge Landing Page (Next.js App Router)
 // Drop this file at: app/page.jsx
 // TailwindCSS required. No external UI libraries used.
-// The Git game lives at: app/games/git-quest/page.jsx → route "/games/git-quest".
+// The Git game lives at: app/games/git-quest-train/page.jsx → route "/games/git-quest-train".
 // Add more game pages at: app/games/<slug>/page.jsx and update the cards below.
 
 export const metadata = {
@@ -39,7 +39,7 @@ function Navbar() {
         <Link href="#pricing" className="hover:text-emerald-300">Pricing</Link>
       </nav>
       <div className="flex items-center gap-2">
-        <Link href="/games/git-quest" className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300 hover:bg-emerald-500/20">
+        <Link href="/games/git-quest-train" className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300 hover:bg-emerald-500/20">
           Play Git Quest
         </Link>
       </div>
@@ -60,9 +60,9 @@ function Hero() {
             XP, coins, and boss battles. Built for speed-learning and real skills.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            {/* IMPORTANT: this links to app/games/git-quest/page.jsx → "/games/git-quest" */}
+            {/* IMPORTANT: this links to app/games/git-quest-train/page.jsx → "/games/git-quest-train" */}
             <Link
-              href="/games/git-quest"
+              href="/games/git-quest-train"
               className="rounded-xl bg-emerald-500 px-6 py-3 text-base font-semibold text-black shadow-lg hover:bg-emerald-400"
             >
               Start Git Quest →
@@ -98,7 +98,7 @@ function GameGrid() {
       title: "Git Quest",
       desc: "Init, config, commits, branches, remotes.",
       level: "Beginner • 3 levels",
-      href: "/games/git-quest",
+      href: "/games/git-quest-train",
       status: "live",
       emoji: "🗡️",
     },
@@ -216,7 +216,7 @@ function CTA() {
           </ul>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link href="/games/git-quest" className="rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-black hover:bg-emerald-400">
+          <Link href="/games/git-quest-train" className="rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-black hover:bg-emerald-400">
             Play Git Quest Free
           </Link>
           <button className="rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm text-zinc-100 hover:bg-white/10">
