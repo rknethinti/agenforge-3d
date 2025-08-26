@@ -30,13 +30,26 @@ function useGitChapters() {
     let mounted = true;
     (async () => {
       setLoading(true);
+      const importers = [
+        () => import("@/content/git/chapters/ch1.json"),
+        () => import("@/content/git/chapters/ch2.json"),
+        () => import("@/content/git/chapters/ch3.json"),
+        () => import("@/content/git/chapters/ch4.json"),
+        () => import("@/content/git/chapters/ch5.json"),
+        () => import("@/content/git/chapters/ch6.json"),
+        () => import("@/content/git/chapters/ch7.json"),
+        () => import("@/content/git/chapters/ch8.json"),
+        () => import("@/content/git/chapters/ch9.json"),
+        () => import("@/content/git/chapters/ch10.json"),
+      ];
       const loaded = [];
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 0; i < importers.length; i++) {
         try {
-          const mod = await import(`@/content/git/chapters/ch${i}.json`);
-          loaded.push({ index: i - 1, exists: true, data: mod.default });
+          const mod = await importers[i]();
+          loaded.push({ index: i, exists: true, data: mod.default });
         } catch (e) {
-          loaded.push({ index: i - 1, exists: false, data: null });
+          console.warn(`[GitTrain] Chapter ch${i + 1}.json not found or failed to parse`, e);
+          loaded.push({ index: i, exists: false, data: null });
         }
       }
       if (mounted) { setChapters(loaded); setLoading(false); }
