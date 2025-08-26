@@ -1,0 +1,152 @@
+{
+  "id": "ch7",
+  "title": "Chapter 7 — Detective Skills: Inspect & Debug",
+  "lore": "In the Hall of Mirrors, you learn to inspect every change, trace every culprit, and hunt down bugs through history.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Inspect Changes with git diff",
+      "lesson": "`git diff` shows differences between two states.\nCommon comparisons:\n- Working vs Index (staged): `git diff` (unstaged only)\n- Index vs HEAD (what will commit): `git diff --staged`\n- Specific file: `git diff path/to/file`\n- Word diff: `git diff --word-diff`",
+      "demo": {
+        "code": "echo \"a\" > file.txt\nprintf \"\\nb\" >> file.txt\n\ngit add file.txt\n\n# Unstaged vs index (none if all staged)\ngit diff\n\n# What is staged vs last commit\ngit diff --staged\n\n# Focus on a file\ngit diff file.txt",
+        "notes": "`--staged` (aka `--cached`) compares the index to HEAD."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command shows the changes that are currently STAGED and will be committed?",
+        "options": [
+          "git diff",
+          "git diff --staged",
+          "git show",
+          "git status"
+        ],
+        "answer": 1,
+        "explain": "`git diff --staged` compares the index to HEAD (what will be committed).",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t2",
+      "title": "View Commit Details with git show",
+      "lesson": "`git show <commit>` displays a commit’s metadata and patch.\nTips:\n- Show just the message: `git show --no-patch <commit>`\n- Show a file as of a commit: `git show <commit>:path/to/file`",
+      "demo": {
+        "code": "git log --oneline\n# Pick a commit hash, e.g., abc1234\ngit show abc1234\n\ngit show --no-patch abc1234\n\ngit show abc1234:path/to/file.js",
+        "notes": "Use `git show <ref>` for tags/branches too."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command prints the full patch and metadata for a specific commit?",
+        "options": [
+          "git diff HEAD~1..HEAD",
+          "git show <hash>",
+          "git status",
+          "git blame <file>"
+        ],
+        "answer": 1,
+        "explain": "`git show` reveals details of a single commit.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Who Changed This Line? git blame",
+      "lesson": "`git blame <file>` annotates each line with the commit, author, and time of last change.\nNarrow the search:\n- A range: `git blame -L 20,60 file.js` (lines 20–60)\n- A commit range base: `git blame <since-commit> -- <file>`",
+      "demo": {
+        "code": "git blame app.js\n\ngit blame -L 20,60 app.js\n\n# See just author and summary lines\ngit blame --show-email app.js",
+        "notes": "Great for context before changing tricky code."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Annotate lines 10–30 of main.py with author/commit info: `git ______ -L 10,30 main.py`",
+        "answerText": "blame",
+        "explain": "`git blame -L <start>,<end> <file>` limits blame to a range.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Find the Bad Commit with git bisect",
+      "lesson": "`git bisect` performs a binary search through history to find the first bad commit.\nWorkflow:\n1) `git bisect start`\n2) Mark current or known commits: `git bisect bad` and `git bisect good <good-hash>`\n3) Git checks out a midpoint → test your app → mark `good` or `bad`\n4) Repeat until the culprit is found\n5) `git bisect reset` to return",
+      "demo": {
+        "code": "git bisect start\n# Mark a known good commit and current as bad\ngit bisect good <good-hash>\ngit bisect bad\n# Test → then mark result\ngit bisect good   # or: git bisect bad\n# After finding culprit\ngit bisect reset",
+        "notes": "Automate testing with `git bisect run <test-script>` for speed."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which sequence best describes a typical bisect session?",
+        "options": [
+          "start → merge → rebase → reset",
+          "start → good <hash> → bad → (test) → good/bad → … → reset",
+          "clone → fetch → pull → reset",
+          "add → commit → push → pull"
+        ],
+        "answer": 1,
+        "explain": "You mark good/bad while Git checks out midpoints; end with `git bisect reset`.",
+        "xp": 50
+      }
+    },
+    {
+      "id": "t5",
+      "title": "Search the Codebase with git grep",
+      "lesson": "`git grep` searches tracked files quickly.\nExamples:\n- Basic search: `git grep -n \"TODO\"`\n- Regex: `git grep -nE \"foo|bar\"`\n- Limit to paths: `git grep -n \"router\" -- src/**/*.ts`",
+      "demo": {
+        "code": "git grep -n \"TODO\"\n\ngit grep -nE \"fix|bug|issue\"\n\ngit grep -n \"router\" -- \"src/**/*.ts\"",
+        "notes": "`-n` prints line numbers; quote globs on some shells."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Find lines containing the word BUG across the repo (show line numbers): `git ____ -n \"BUG\"`",
+        "answerText": "grep",
+        "explain": "`git grep -n \"BUG\"` searches tracked files with line numbers.",
+        "xp": 50
+      }
+    }
+  ],
+  "boss": {
+    "id": "b7",
+    "title": "Boss: The Bug Hunter",
+    "intro": "Track the shadows through history and unmask the culprit commit.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "Which command shows differences between the INDEX and HEAD (what will be committed)?",
+        "options": [
+          "git diff",
+          "git diff --staged",
+          "git show",
+          "git status"
+        ],
+        "answer": 1,
+        "explain": "`git diff --staged` compares the index to HEAD.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "View details for commit abc1234: `git ____ abc1234`",
+        "answerText": "show",
+        "explain": "`git show <hash>` prints metadata and patch.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "You’re chasing an intermittent bug across history. Which tool narrows the first bad commit fastest?",
+        "options": [
+          "git blame",
+          "git grep",
+          "git bisect",
+          "git reset --hard"
+        ],
+        "answer": 2,
+        "explain": "`git bisect` performs a binary search to find the first bad commit.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "Show who changed lines 50–80 of server.js most recently: `git ______ -L 50,80 server.js`",
+        "answerText": "blame",
+        "explain": "`git blame -L <start>,<end> <file>` focuses on a line range.",
+        "xp": 70
+      }
+    ]
+  }
+}

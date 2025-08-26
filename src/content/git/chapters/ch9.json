@@ -1,0 +1,142 @@
+{
+  "id": "ch9",
+  "title": "Chapter 9 — Secrets of Automation",
+  "lore": "In the Chamber of Scripts, master smiths reveal hidden automations—hooks, signed commits, templates, and aliases that bend Git to your will.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Git Hooks",
+      "lesson": "Hooks are scripts triggered by Git events. Stored in `.git/hooks/`, they run automatically when actions occur.\nExamples:\n- pre-commit → run lint/tests before allowing a commit\n- pre-push → run CI checks before pushing\n- commit-msg → enforce commit message format",
+      "demo": {
+        "code": "# Example: enforce no TODOs before commit\ncat > .git/hooks/pre-commit <<'EOF'\n#!/bin/sh\nif grep -r 'TODO' .; then\n  echo '❌ Commit blocked: TODO found.'\n  exit 1\nfi\nEOF\nchmod +x .git/hooks/pre-commit",
+        "notes": "Hooks are local by default (not shared). For team-wide hooks, use tools like Husky or pre-commit frameworks."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which hook checks commit messages?",
+        "options": [
+          "pre-commit",
+          "pre-push",
+          "commit-msg",
+          "prepare-commit-msg"
+        ],
+        "answer": 2,
+        "explain": "The `commit-msg` hook inspects and validates commit messages.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Signed Commits (GPG/SSH)",
+      "lesson": "Signed commits prove authenticity. With GPG or SSH keys, you cryptographically sign commits.\nBenefits: verify author identity, prevent impersonation.\nGitHub shows a 'Verified' badge on signed commits.",
+      "demo": {
+        "code": "# Configure signing key\ngit config --global user.signingkey <KEY_ID>\ngit config --global commit.gpgsign true\n\n# Make a signed commit\ngit commit -S -m \"feat: secure commit\"",
+        "notes": "Use GPG (`gpg --full-generate-key`) or SSH-based signing (Git 2.34+). Upload public key to your Git host."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Why use signed commits?",
+        "options": [
+          "To compress commit history",
+          "To prove commit authenticity and prevent impersonation",
+          "To store large files",
+          "To skip tests"
+        ],
+        "answer": 1,
+        "explain": "Signed commits add cryptographic verification of authorship.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Commit Templates",
+      "lesson": "Commit templates let you standardize commit messages across a project.\nDefine a file with structure (e.g., ticket ID, description, testing notes) and point Git at it.",
+      "demo": {
+        "code": "# Create template file\necho \"Ticket: \nDescription: \nTesting: \" > ~/.gitmessage.txt\n\n# Configure globally\ngit config --global commit.template ~/.gitmessage.txt\n\n# Now every commit opens editor with template pre-filled",
+        "notes": "Great for teams needing consistent commit metadata."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Set a global commit template: `git config --global commit.____ ~/.gitmessage.txt`",
+        "answerText": "template",
+        "explain": "`git config commit.template` points to the commit message template file.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Git Aliases",
+      "lesson": "Aliases shorten long commands.\nExamples:\n- `git config --global alias.st status`\n- `git config --global alias.co checkout`\n- `git config --global alias.lg \"log --oneline --graph --decorate --all\"`",
+      "demo": {
+        "code": "# Create common aliases\ngit config --global alias.st status\ngit config --global alias.co checkout\ngit config --global alias.lg \"log --oneline --graph --decorate --all\"\n\n# Now use them:\ngit st\ngit co -b feature/login\ngit lg",
+        "notes": "Aliases live in your config file (~/.gitconfig). They expand into full commands."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What does this command do? `git config --global alias.co checkout`",
+        "options": [
+          "Creates a new branch named co",
+          "Defines an alias 'co' that runs git checkout",
+          "Checks out the branch named alias",
+          "Creates a commit template"
+        ],
+        "answer": 1,
+        "explain": "It creates an alias 'co' for `git checkout`.",
+        "xp": 55
+      }
+    }
+  ],
+  "boss": {
+    "id": "b9",
+    "title": "Boss: The Automaton",
+    "intro": "The Automaton challenges you: prove you can harness Git’s scripts and shortcuts.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "Which hook validates commit messages?",
+        "options": [
+          "pre-commit",
+          "pre-push",
+          "commit-msg",
+          "post-merge"
+        ],
+        "answer": 2,
+        "explain": "The `commit-msg` hook inspects the commit message before finalizing.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "What is the main benefit of signed commits?",
+        "options": [
+          "They compress history",
+          "They verify authorship and authenticity",
+          "They ignore large files",
+          "They skip CI checks"
+        ],
+        "answer": 1,
+        "explain": "Signed commits prove the commit is truly from the claimed author.",
+        "xp": 70
+      },
+      {
+        "type": "blank",
+        "prompt": "Set a commit template: `git config --global commit.____ ~/.gitmessage.txt`",
+        "answerText": "template",
+        "explain": "Commit templates enforce consistent commit message structures.",
+        "xp": 70
+      },
+      {
+        "type": "mcq",
+        "prompt": "Which alias setup makes `git lg` show pretty logs?",
+        "options": [
+          "git config --global alias.lg \"log --oneline --graph --decorate --all\"",
+          "git config --global alias.st status",
+          "git config --global alias.co checkout",
+          "git config --global alias.log graph"
+        ],
+        "answer": 0,
+        "explain": "This alias expands to the popular one-line graph log view.",
+        "xp": 70
+      }
+    ]
+  }
+}

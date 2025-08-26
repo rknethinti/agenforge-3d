@@ -1,0 +1,142 @@
+{
+  "id": "ch8",
+  "title": "Chapter 8 — Advanced Constructs: Worktrees, Submodules, Sparse Checkout, LFS",
+  "lore": "Beyond the City of Branches lie the Workshops of Many Paths. Here you’ll learn parallel worktrees, nested repositories, partial checkouts for huge forests, and the magic of handling giant artifacts.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Worktrees: Parallel Working Directories",
+      "lesson": "Worktrees let you check out multiple branches at the same time in separate folders, all sharing a single .git object database. This avoids stashing or committing WIP just to switch branches.\nUse cases:\n- Work on a hotfix while keeping your feature branch open\n- Run two branches side-by-side for quick comparisons",
+      "demo": {
+        "code": "# From an existing repo folder\n# Create a new worktree for branch 'hotfix-1' in a sibling directory\nmkdir -p ../hotfix-1\n\ngit worktree add ../hotfix-1 -b hotfix-1\n# Now '../hotfix-1' is a fully usable working directory on branch hotfix-1\n\n# List worktrees\ngit worktree list\n\n# Remove a worktree when done (run this from the MAIN repo, not inside the worktree)\ngit worktree remove ../hotfix-1",
+        "notes": "Don’t nest worktrees inside each other. Remove with `git worktree remove <path>` when finished."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What’s a key advantage of Git worktrees?",
+        "options": [
+          "They create a brand-new repository unrelated to the original",
+          "They allow multiple branches to be checked out simultaneously in different folders",
+          "They automatically squash commits when switching branches",
+          "They upload large files to the cloud"
+        ],
+        "answer": 1,
+        "explain": "Worktrees share the same repo object database and let you keep several branches checked out in parallel.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Submodules: Repos Inside Repos",
+      "lesson": "Submodules embed another Git repository at a path within your repo. Your repo records a specific commit of the submodule (a pointer), not its entire history.\nCommon uses:\n- Reusing a library across multiple projects\n- Pinning dependencies at exact commits",
+      "demo": {
+        "code": "# Add a submodule at path 'libs/cool-lib'\ngit submodule add https://github.com/user/cool-lib.git libs/cool-lib\n\n# Clone a repo that contains submodules\ngit clone https://github.com/org/app.git\ncd app\n\ngit submodule init\ngit submodule update  # fetches the submodule commits\n# Or do it in one shot when cloning:\n# git clone --recurse-submodules https://github.com/org/app.git\n\n# Update submodule to latest on its default branch (inside submodule dir)\ncd libs/cool-lib\ngit fetch\ngit switch main && git pull\ncd ../..\n# Record the new submodule commit in the parent repo\ngit add libs/cool-lib\ngit commit -m \"chore(submodule): bump cool-lib\"",
+        "notes": "Remember: the parent repo **tracks a commit** in the submodule. Team members must run `submodule update` after pulling changes that move the pointer."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Clone a repo and automatically initialize & fetch its submodules (single command flag): `git clone ____-submodules <url>`",
+        "answerText": "--recurse",
+        "explain": "Use `git clone --recurse-submodules <url>` to initialize and fetch submodules during clone.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Sparse Checkout: Partial Trees for Huge Repos",
+      "lesson": "Sparse checkout lets you work with only a subset of files in a very large repository. Git writes just the paths you specify to the working directory.\nModern (cone mode) workflow:",
+      "demo": {
+        "code": "# Enable sparse checkout (cone mode by default)\ngit sparse-checkout init --cone\n\n# Check out only specific directories (fast, scalable)\ngit sparse-checkout set src/web docs\n\n# Expand your view later\ngit sparse-checkout set src/web docs tools/scripts\n\n# Disable sparse (restore full checkout)\ngit sparse-checkout disable",
+        "notes": "Use sparse checkout when repos are huge (monorepos). It reduces disk usage and speeds up operations."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command enables modern sparse checkout in cone mode?",
+        "options": [
+          "git checkout --sparse",
+          "git sparse-checkout init --cone",
+          "git pull --sparse",
+          "git fetch --cone"
+        ],
+        "answer": 1,
+        "explain": "`git sparse-checkout init --cone` enables sparse mode optimized for directory patterns.",
+        "xp": 55
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Git LFS: Large File Storage",
+      "lesson": "Git LFS stores large binaries (media, datasets) in a separate storage while keeping lightweight pointers in your repo. This keeps clones fast and repo size small.",
+      "demo": {
+        "code": "# Install LFS once on your machine (run outside or inside a repo)\ngit lfs install\n\n# Track file patterns (creates/updates .gitattributes)\ngit lfs track \"*.psd\"\n\necho \"*.psd filter=lfs diff=lfs merge=lfs -text\" >> .gitattributes\n\ngit add .gitattributes\n\ngit add design.psd && git commit -m \"Add PSD via LFS\"\n\ngit push  # uploads LFS objects to the configured remote LFS storage",
+        "notes": "Ensure your hosting (GitHub/GitLab) has LFS enabled. `.gitattributes` must be committed for teammates to use the same LFS rules."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "What does Git LFS store in your Git repository?",
+        "options": [
+          "The full binary files",
+          "Only links/pointers to large files, with real binaries stored in LFS storage",
+          "An encrypted tarball of large files",
+          "Nothing; it deletes large files from history automatically"
+        ],
+        "answer": 1,
+        "explain": "LFS replaces the files in Git with small pointer files; binaries live in a separate LFS store.",
+        "xp": 55
+      }
+    }
+  ],
+  "boss": {
+    "id": "b8",
+    "title": "Boss: The Architect of Scale",
+    "intro": "Massive codebases, nested libraries, and giant assets—prove you can wield the tools of scale.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "You must work on two branches simultaneously without stashing WIP. Best feature?",
+        "options": [
+          "Submodules",
+          "Worktrees",
+          "Sparse checkout",
+          "LFS"
+        ],
+        "answer": 1,
+        "explain": "Worktrees allow multiple branches to be checked out in separate folders.",
+        "xp": 75
+      },
+      {
+        "type": "blank",
+        "prompt": "Clone a repo and fetch submodules in one step: `git clone ____-submodules <url>`",
+        "answerText": "--recurse",
+        "explain": "Use `--recurse-submodules` during clone.",
+        "xp": 75
+      },
+      {
+        "type": "mcq",
+        "prompt": "Repo is huge; you only need `docs/` and `src/web/`. What feature?",
+        "options": [
+          "git filter-branch",
+          "git sparse-checkout",
+          "git cherry-pick",
+          "git revert"
+        ],
+        "answer": 1,
+        "explain": "Sparse checkout limits working files to chosen paths.",
+        "xp": 75
+      },
+      {
+        "type": "mcq",
+        "prompt": "Design files (hundreds of MB) bloat your repo. What’s the best approach?",
+        "options": [
+          "Commit them directly to main",
+          "Use Git LFS to track the large file patterns",
+          "Store them in .gitignore only",
+          "Rebase them out every week"
+        ],
+        "answer": 1,
+        "explain": "Git LFS keeps binaries outside the main Git object store while keeping pointers in the repo.",
+        "xp": 75
+      }
+    ]
+  }
+}

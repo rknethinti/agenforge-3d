@@ -1,0 +1,186 @@
+{
+  "id": "ch10",
+  "title": "Chapter 10 — The Grandmaster’s Path: Workflows & Mastery",
+  "lore": "On the Summit of Craft, masters debate workflows, scale, and safety. Choose wisely, for these patterns shape teams and empires.",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "Workflows: Gitflow vs Trunk-Based",
+      "lesson": "Two dominant styles:\n- Gitflow: long-lived branches (main, develop), plus feature/release/hotfix branches. Suits regulated releases but can be heavy.\n- Trunk-based: a single main (trunk); short-lived feature branches; frequent merges (often daily) with CI. Faster delivery with fewer long-lived branches.",
+      "demo": {
+        "code": "# Gitflow-style example\n# feature branch off develop\ngit checkout -b feature/login develop\n# release branch when stabilizing\ngit checkout -b release/1.2 develop\n\n# Trunk-based example\ngit switch -c feat-small-change\n# small PR → squash merge into main the same day",
+        "notes": "Pick trunk-based for speed and simplicity; Gitflow when you need staged releases and strict QA gates."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which statement best describes trunk-based development?",
+        "options": [
+          "It requires a permanent develop branch and long-lived features",
+          "It emphasizes short-lived branches merged to main frequently",
+          "It forbids CI and code review",
+          "It only works for open source"
+        ],
+        "answer": 1,
+        "explain": "Trunk-based keeps branches short-lived and integrates to main frequently with CI.",
+        "xp": 60
+      }
+    },
+    {
+      "id": "t2",
+      "title": "Pull Requests & Merge Strategies",
+      "lesson": "PR best practices: small scope, clear description, tests, and reviewers.\nMerge strategies:\n- Merge commit: preserves full branch history.\n- Squash merge: condenses PR into one commit (clean history).\n- Rebase merge: rebases then fast-forwards onto main (linear, but beware public history rewrites).",
+      "demo": {
+        "code": "# Local rebase before opening PR (keep history tidy)\ngit fetch origin\ngit rebase origin/main\n\n# After merge, delete remote branch\ngit push origin :feature/login",
+        "notes": "Prefer squash merges for small, self-contained PRs. Use merge commits when you want to retain the branch’s internal history."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which strategy produces one commit on main for the whole PR?",
+        "options": [
+          "Merge commit",
+          "Squash merge",
+          "Rebase merge",
+          "Octopus merge"
+        ],
+        "answer": 1,
+        "explain": "Squash merge condenses the PR into a single commit on the target branch.",
+        "xp": 60
+      }
+    },
+    {
+      "id": "t3",
+      "title": "Monorepo Strategies (Subtree, Tooling, Ownership)",
+      "lesson": "Monorepos hold many projects in one repo. Benefits: atomic changes, shared tooling, single source of truth. Risks: size, ownership boundaries.\nOptions:\n- Subtree: fold external repo history into a subdir and sync with `git subtree`.\n- Code ownership: enforce reviews via CODEOWNERS.\n- Path-based CI: build/test only changed areas.\n- Use sparse checkout/partial clone to keep working sets small.",
+      "demo": {
+        "code": "# Add an external repo as subtree at 'libs/ui'\ngit subtree add --prefix=libs/ui https://github.com/org/ui.git main --squash\n\n# Later, pull upstream changes into subtree\ngit subtree pull --prefix=libs/ui https://github.com/org/ui.git main --squash",
+        "notes": "Subtree keeps a copy inside your repo; good when you want history but not submodules’ indirection."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "A key advantage of monorepos is:",
+        "options": [
+          "They remove the need for CI",
+          "Atomic changes across many packages in one commit",
+          "They make Git history unreadable",
+          "They block code ownership rules"
+        ],
+        "answer": 1,
+        "explain": "Monorepos enable coordinated refactors and atomic changes across many packages.",
+        "xp": 60
+      }
+    },
+    {
+      "id": "t4",
+      "title": "Rebase vs Merge: Team Guidelines",
+      "lesson": "Guidelines that scale:\n- Rebase your **own** local feature branch to keep it tidy before sharing (don’t rebase public branches others rely on).\n- Merge (or squash) into main to integrate reviewed work.\n- Avoid force-pushing shared branches; prefer new commits or protected branches.\n- Communicate: when rewriting history, coordinate with teammates.",
+      "demo": {
+        "code": "# Safe local cleanup before pushing\ngit rebase -i HEAD~5   # squash/reword\n\n# Integrate via merge or squash\n# (on platform UI) choose 'Squash and merge'",
+        "notes": "Public history rewrites can break others’ work. Use protected branches with required reviews."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "When should you AVOID rebasing?",
+        "options": [
+          "When cleaning up your own local branch before pushing",
+          "When rewriting history of a branch others have already pulled",
+          "When reducing small fixup commits locally",
+          "When preparing a tidy PR"
+        ],
+        "answer": 1,
+        "explain": "Avoid rebasing shared/public history unless everyone agrees.",
+        "xp": 60
+      }
+    },
+    {
+      "id": "t5",
+      "title": "Performance on Huge Repos",
+      "lesson": "For very large repos, use:\n- Partial clone (filter blobs): `--filter=blob:none`\n- Shallow clone: `--depth=1` for CI\n- Sparse checkout (cone mode) to limit working set\n- Maintenance: `git maintenance start` (background) or `git gc`\n- Prune large artifacts: Git LFS and history cleanup (with care)",
+      "demo": {
+        "code": "# Fast partial clone\ngit clone --filter=blob:none https://github.com/org/big.git\ncd big\n\ngit sparse-checkout init --cone\ngit sparse-checkout set services/api web\n\n# CI shallow clone example\ngit clone --depth=1 https://github.com/org/big.git",
+        "notes": "Partial clone requires server support. Use sparse checkout to avoid huge working directories."
+      },
+      "quiz": {
+        "type": "mcq",
+        "prompt": "Which command avoids downloading file contents until needed?",
+        "options": [
+          "git clone --depth=1",
+          "git clone --filter=blob:none",
+          "git gc",
+          "git fetch --all"
+        ],
+        "answer": 1,
+        "explain": "Partial clone with `--filter=blob:none` skips blobs until requested.",
+        "xp": 60
+      }
+    },
+    {
+      "id": "t6",
+      "title": "Security & Access Controls",
+      "lesson": "Harden your workflow:\n- Protected branches: require reviews, status checks, and block force-push\n- Signed commits: verify authorship\n- Secrets hygiene: never commit .env or credentials; use vaults\n- CODEOWNERS: enforce required reviewers by path\n- Audit: enable branch protection logs, mandatory CI",
+      "demo": {
+        "code": "# CODEOWNERS example (repo root)\n# Paths → owners (teams/users)\n/apps/api/   @org/backend\n/apps/web/   @org/frontend\n\n# .gitignore snippet\n.env\n*.key\n*.pem\n",
+        "notes": "Keep secrets outside Git. Use provider features: required reviews, required status checks, signed commits."
+      },
+      "quiz": {
+        "type": "blank",
+        "prompt": "Which file enforces path-based reviewers on platforms like GitHub? `___________`",
+        "answerText": "CODEOWNERS",
+        "explain": "A CODEOWNERS file maps paths to required reviewers.",
+        "xp": 60
+      }
+    }
+  ],
+  "boss": {
+    "id": "b10",
+    "title": "Boss: The Grandmaster",
+    "intro": "Only those who balance speed, safety, and scale may carry the Forge’s seal.",
+    "questions": [
+      {
+        "type": "mcq",
+        "prompt": "You want rapid delivery with minimal long-lived branches. Which workflow?",
+        "options": [
+          "Gitflow",
+          "Trunk-based",
+          "Feature-freeze",
+          "Fork-only"
+        ],
+        "answer": 1,
+        "explain": "Trunk-based emphasizes short-lived branches and frequent merges to main.",
+        "xp": 80
+      },
+      {
+        "type": "mcq",
+        "prompt": "Which merge option keeps PR history compact and tidy on main?",
+        "options": [
+          "Merge commit",
+          "Squash merge",
+          "Rebase merge",
+          "Octopus merge"
+        ],
+        "answer": 1,
+        "explain": "Squash merge creates a single commit for the PR.",
+        "xp": 80
+      },
+      {
+        "type": "blank",
+        "prompt": "Clone a huge repo but avoid downloading blobs initially: `git clone ____=blob:none <url>`",
+        "answerText": "--filter",
+        "explain": "Use partial clone with `--filter=blob:none`.",
+        "xp": 80
+      },
+      {
+        "type": "mcq",
+        "prompt": "Prevent direct pushes and enforce reviews on main. What should you configure?",
+        "options": [
+          "Git LFS",
+          "Branch protection rules + CODEOWNERS",
+          "Rebase merges only",
+          "Sparse checkout"
+        ],
+        "answer": 1,
+        "explain": "Protected branches with required reviews and CODEOWNERS enforce safe collaboration.",
+        "xp": 80
+      }
+    ]
+  }
+}
